@@ -46,6 +46,14 @@ namespace SDPLabs.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Cars");
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("text");
+                    b.Property<int>("Price")
+                        .HasColumnType("integer");
+                    b.Property<string>("VinCode")
+                        .IsRequired()
+                        .HasColumnType("text");
                 });
 #pragma warning restore 612, 618
         }
