@@ -17,6 +17,8 @@ public class SDPLabsDbContext : DbContext
     }
 }
 
+[Index(nameof(VinCode), IsUnique = true)]
+
 public class Car
 {
     public long Id { get; set; }
