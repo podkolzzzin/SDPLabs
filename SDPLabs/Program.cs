@@ -17,10 +17,9 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.MapGet("/", () => "Hello World!");
-app.MapPost("/car", (CarService service, CarRequestDto car)
-  => service.AddCarAsync(new(car.Model, car.Mark, car.Color, car.YearOfProduction, car.Price)));
+app.MapPost("/car", (CarService service, CarRequestDto car) => service.AddCarAsync(new(car.Model, car.Mark, car.Color, car.YearOfProduction, car.Price, car.VinCode)));
 app.MapGet("/cars", (CarService service) => service.GetAll());
 
 app.Run();
 
-public record CarRequestDto(string Model, string Mark, string Color, int YearOfProduction, int Price);
+public record CarRequestDto(string Model, string Mark, string Color, int YearOfProduction, int Price, string VinCode);

@@ -2,7 +2,7 @@
 
 namespace SDPLabs.BusinessLogic;
 
-public record CarDto(string Model, string Mark, string Color, int YearOfProduction, int Price);
+public record CarDto(string Model, string Mark, string Color, int YearOfProduction, int Price, string VinCode);
 
 public class CarService
 {
@@ -19,13 +19,16 @@ public class CarService
       Model = car.Model,
       Mark = car.Mark,
       Year = car.YearOfProduction,
+      Color = car.Color,
+      Price = car.Price,
+      VinCode = car.VinCode,
     });
   }
 
   public async Task<List<CarDto>> GetAll()
   {
     var dbCars = await _carRepository.GetAllAsync();
-    return dbCars.Select(x => new CarDto(x.Model, x.Mark, null!, x.Year, 0))
+    return dbCars.Select(x => new CarDto(x.Model, x.Mark, x.Color, x.Year, x.Price, x.VinCode))
       .ToList();
   }
 }
