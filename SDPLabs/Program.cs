@@ -18,7 +18,7 @@ app.UseSwaggerUI();
 
 app.MapGet("/", () => "Hello World!");
 app.MapPost("/car", (CarService service, CarRequestDto car)
-  => service.AddCarAsync(new(car.Model, car.Mark, car.Color, car.YearOfProduction, car.Price)));
+  => service.AddCarAsync(new(car.Model, car.Mark, car.Color, car.YearOfProduction, car.Price, "")));
 app.MapGet("/cars", (CarService service) => service.GetAll());
 
 app.Run();
