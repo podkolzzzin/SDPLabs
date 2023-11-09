@@ -28,6 +28,6 @@ public class Car
     
     public string VinCode { get; set; } = null!;
     
-    public string Color { get; set; } = null!;
-    public string Price { get; set; } = null!;
+    public string Color { get; set; } 
+    public string Price { get; set; }
 }
