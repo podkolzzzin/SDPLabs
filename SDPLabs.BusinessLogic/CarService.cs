@@ -2,7 +2,8 @@
 
 namespace SDPLabs.BusinessLogic;
 
-public record CarDto(string Model, string Mark, string Color, int YearOfProduction, int Price, string VinCode);
+public record CarDto(string Model, string Mark, string Color, int YearOfProduction, int Price);
+public record CreateCarDto(string Model, string Mark, string Color, int YearOfProduction, int Price, string VinCode);
 
 public class CarService
 {
@@ -11,24 +12,39 @@ public class CarService
   {
     _carRepository = carRepository;
   }
-  
-  public async Task AddCarAsync(CarDto car)
+
+  public async Task AddCarAsync(CreateCarDto createCar)
   {
-    await _carRepository.AddAsync(new ()
+    var list = await _carRepository.GetAllAsync();
+    var existing = list.FirstOrDefault(x => x.VinCode == createCar.VinCode);
+    if (existing != null)
     {
-      Model = car.Model,
-      Mark = car.Mark,
-      Year = car.YearOfProduction,
-      Color = car.Color,
-      Price = car.Price,
-      VinCode = car.VinCode,
-    });
+      existing.Color = createCar.Color;
+      existing.Model = createCar.Model;
+      existing.Mark = createCar.Mark;
+      existing.Year = createCar.YearOfProduction;
+      existing.Price = createCar.Price;
+      await _carRepository.UpdateAsync(existing);
+    }
+
+    else
+    {
+      await _carRepository.AddAsync(new()
+      {
+        Model = createCar.Model,
+        Mark = createCar.Mark,
+        Year = createCar.YearOfProduction,
+        Color = createCar.Color,
+        Price = createCar.Price,
+        //VinCode = car.VinCode,
+      });
+    }
   }
 
   public async Task<List<CarDto>> GetAll()
   {
     var dbCars = await _carRepository.GetAllAsync();
-    return dbCars.Select(x => new CarDto(x.Model, x.Mark, x.Color, x.Year, x.Price, x.VinCode))
+    return dbCars.Select(x => new CarDto(x.Model, x.Mark, x.Color, x.Year, x.Price))
       .ToList();
   }
 }

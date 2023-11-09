@@ -22,4 +22,10 @@ public class CarRepository : ICarRepository
     await _context.SaveChangesAsync();
     return car;
   }
+
+  public async Task UpdateAsync(Car existing)
+  {
+    _context.Update(existing);
+    await _context.SaveChangesAsync();
+  }
 }

@@ -22,9 +22,9 @@ public class Car
     public long Id { get; set; }
     public string Mark { get; set; } = null!;
     public string Model { get; set; }= null!;
-    public string Color { get; set; }
+    public string Color { get; set; }= null!;
     public int Year { get; set; }
     public int Price { get; set; }
-    
-    public string? VinCode { get; set; }
+
+    public string VinCode { get; set; } = null!;
 }
