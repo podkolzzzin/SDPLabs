@@ -29,11 +29,22 @@ namespace SDPLabs.DataAccess.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Mark")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Model")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Price")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("VinCode")
                         .IsRequired()
                         .HasColumnType("text");
 
