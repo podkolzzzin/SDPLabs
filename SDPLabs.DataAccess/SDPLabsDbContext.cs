@@ -17,10 +17,17 @@ public class SDPLabsDbContext : DbContext
     }
 }
 
+[Index(nameof(VinCode), IsUnique = true)] 
 public class Car
 {
     public long Id { get; set; }
     public string Mark { get; set; } = null!;
     public string Model { get; set; }= null!;
     public int Year { get; set; }
+    
+    
+    public string VinCode { get; set; } = null!;
+    
+    public string Color { get; set; } = null!;
+    public string Price { get; set; } = null!;
 }
