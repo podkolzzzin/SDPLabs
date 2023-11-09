@@ -10,16 +10,24 @@ public class CarRepository : ICarRepository
   {
     _context = context;
   }
+  public async Task<Car?> FindByVinAsync(string vinCode)
+  {
+    return await _context.Cars.FirstOrDefaultAsync(c => c.VinCode == vinCode);
+  }
 
   public async Task<List<Car>> GetAllAsync()
   {
     return await _context.Cars.ToListAsync();
   }
-  
-  public async Task<Car> AddAsync(Car car)
+  public async Task UpdateAsync(Car car)
+  {
+    _context.Cars.Update(car);
+    await _context.SaveChangesAsync();
+  }
+  public async Task AddAsync(Car car)
   {
     _context.Add(car);
+    await _context.Cars.AddAsync(car);
     await _context.SaveChangesAsync();
-    return car;
   }
 }
