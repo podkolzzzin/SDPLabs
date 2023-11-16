@@ -13,7 +13,8 @@ public class CarRepository : ICarRepository
 
   public async Task<List<Car>> GetAllAsync()
   {
-    return await _context.Cars.ToListAsync();
+    return await _context.Cars
+      .ToListAsync();
   }
   
   public async Task<Car> AddAsync(Car car)
@@ -21,5 +22,17 @@ public class CarRepository : ICarRepository
     _context.Add(car);
     await _context.SaveChangesAsync();
     return car;
+  }
+  
+  public async Task UpdateAsync(Car existing)
+  {
+    _context.Update(existing);
+    await _context.SaveChangesAsync();
+  }
+  
+  public async Task<Car?> FindByVinCodeAsync(string createCarVinCode)
+  {
+    // SELECT * FROM Cars WHERE VinCode = ?
+    return await _context.Cars.FirstOrDefaultAsync(x => x.VinCode == createCarVinCode);
   }
 }
