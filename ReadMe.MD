@@ -64,7 +64,7 @@
 4. Publish events
    1. `CarReceivedDangerousMileage` when Mileage is more than 100_000
    2. `CarReceivedCriticalMileage` when Mileage is more than 200_000
-5. Create new simple console application that listens to `CarReceivedDangerousMileage` and `CarReceivedCriticalMileage`.
+5. Create new simple console application `SDPLabs.Alerts` that listens to `CarReceivedDangerousMileage` and `CarReceivedCriticalMileage`.
    1. Application should print(Mark, Model, Id, TotalMileage) using yellow color when `CarReceivedDangerousMileage` is received
    2. Application should print(Mark, Model, Id, TotalMileage) using red color when `CarReceivedCriticalMileage` is received
 
@@ -84,6 +84,19 @@
 2. Create a new branch with your name
 3. Commit your changes to the new branch
 4. Create a pull request to the `lab2-branch` branch of this repository
+
+## Recommendations
+- Use `docker-compose up` to start RabbitMQ
+- Look how `SDPLabs.RandomPublisher` works, launch it. It will publish `CarMovedEvent` to random cars
+- There is class in `SDPLabs` `RabbitMqListenerService` that must be used to listen to the events
+- Start with listening to `CarMovedEvent`. Print something in console, check how it works
+- `SDPLabs.RandomPublisher` project to publish test events. To Launch it click Right Mouse Button on the project -> Debug -> Start new instance
+- Handle `CarMovedEvent`: Make it append data to the database
+- Publish `CarReceivedDangerousMileage` and `CarReceivedCriticalMileage` events
+- Create new project in `Apps` solution folder called `SDPLabs.Alerts`
+- Add reference to `SDPLabs.Common.Events` project
+- Subscribe to `CarReceivedDangerousMileage` and `CarReceivedCriticalMileage` events
+- Print Alerts to the console
 
 ## After Lab. Interesting Moments:
 - Please, pay attention that the common thing for multiple apps is moved to a separate project and it is referenced to multiple `Apps`
