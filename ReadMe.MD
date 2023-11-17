@@ -58,7 +58,7 @@
 1. Add model that describes Mileage(Distance, DateTime) of the car
    1. Add and apply migration
    2. Using `POST /car` create a couple of cars
-2. Start listening to the CarMovedEvent
+2. Start listening to the `CarMovedEvent`
    1. Insert new Mileage record when CarMovedEvent is received
 3. Update `GET /cars` endpoint to return total Mileage of each car
 4. Publish events

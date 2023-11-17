@@ -6,6 +6,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SDPLabs.BusinessLogic", "SD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SDPLabs.DataAccess", "SDPLabs.DataAccess\SDPLabs.DataAccess.csproj", "{007CBAD0-0E28-4802-B335-6BC95F2CEB5B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Apps", "Apps", "{476F2F63-8BDF-4009-8095-9A366AE6CD98}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SDPLabs.RandomPublisher", "SDPLabs.RandomPublisher\SDPLabs.RandomPublisher.csproj", "{0945E734-E0C4-4DA2-9CA9-58528D306F26}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SDPLabs.Common.Events", "SDPLabs.Common.Events\SDPLabs.Common.Events.csproj", "{886C2F6B-A983-4B34-8C90-BB2B7BC32216}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +30,17 @@ Global
 		{007CBAD0-0E28-4802-B335-6BC95F2CEB5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{007CBAD0-0E28-4802-B335-6BC95F2CEB5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{007CBAD0-0E28-4802-B335-6BC95F2CEB5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0945E734-E0C4-4DA2-9CA9-58528D306F26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0945E734-E0C4-4DA2-9CA9-58528D306F26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0945E734-E0C4-4DA2-9CA9-58528D306F26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0945E734-E0C4-4DA2-9CA9-58528D306F26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{886C2F6B-A983-4B34-8C90-BB2B7BC32216}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{886C2F6B-A983-4B34-8C90-BB2B7BC32216}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{886C2F6B-A983-4B34-8C90-BB2B7BC32216}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{886C2F6B-A983-4B34-8C90-BB2B7BC32216}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{62C7F97D-0A60-4194-B81A-5C0D422ECF66} = {476F2F63-8BDF-4009-8095-9A366AE6CD98}
+		{0945E734-E0C4-4DA2-9CA9-58528D306F26} = {476F2F63-8BDF-4009-8095-9A366AE6CD98}
 	EndGlobalSection
 EndGlobal
