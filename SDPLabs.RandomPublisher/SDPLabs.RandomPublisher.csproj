@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <OutputType>Exe</OutputType>
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
@@ -9,7 +10,6 @@
     <ItemGroup>
       <ProjectReference Include="..\SDPLabs.Common.Events\SDPLabs.Common.Events.csproj" />
       <ProjectReference Include="..\SDPLabs.DataAccess\SDPLabs.DataAccess.csproj" />
-      <ProjectReference Include="..\SDPLabs.RandomPublisher\SDPLabs.RandomPublisher.csproj" />
     </ItemGroup>
 
     <ItemGroup>
