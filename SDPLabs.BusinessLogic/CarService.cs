@@ -4,12 +4,40 @@ using SDPLabs.DataAccess.Interfaces;
 namespace SDPLabs.BusinessLogic;
 
 public record AccidentDto(string Description, int Damage);
-public record CarDto(string Model, string Mark, string Color, int YearOfProduction, int Price);
+public record CarDto(string Model, string Mark, string Color, int YearOfProduction, int Price, int Mileage, DateTime recordTime);
 public record CreateCarDto(string Model, string Mark, string Color, int YearOfProduction, int Price, string VinCode);
+
+public record MileageDto(long CarId, int Distance, DateTime DateRecorded);
+public record CreateMileageDto(long CarId, int Distance, DateTime DateRecorded);
+
 
 public class CarService
 {
   private readonly ICarRepository _carRepository;
+  private readonly IMileageRepository _mileageRepository;
+
+  public CarService(ICarRepository carRepository, IMileageRepository mileageRepository)
+  {
+    _carRepository = carRepository;
+    _mileageRepository = mileageRepository;
+  }
+
+  public async Task AddMileageAsync(CreateMileageDto createMileageDto)
+  {
+    var mileage = new Mileage
+    {
+      CarId = createMileageDto.CarId,
+      Distance = createMileageDto.Distance,
+      DateRecorded = createMileageDto.DateRecorded
+    };
+    await _mileageRepository.AddAsync(mileage);
+  }
+
+  public async Task<List<MileageDto>> GetMileageByCarIdAsync(long carId)
+  {
+    var mileages = await _mileageRepository.FindByCarIdAsync(carId);
+    return mileages.Select(m => new MileageDto(m.CarId, m.Distance, m.DateRecorded)).ToList();
+  }
   public CarService(ICarRepository carRepository)
   {
     _carRepository = carRepository;
@@ -43,11 +71,24 @@ public class CarService
 
   public async Task<List<CarDto>> GetAll()
   {
-    
-    // N + 1 Problem
     var dbCars = await _carRepository.GetAllAsync();
-    return dbCars
-      .Select(x => new CarDto(x.Model, x.Mark, x.Color, x.Year, x.Price))
-      .ToList();
+    var carDtos = new List<CarDto>();
+
+    foreach (var dbCar in dbCars)
+    {
+      var mileages = await _mileageRepository.FindByCarIdAsync(dbCar.Id);
+      var totalMileage = mileages.Sum(m => m.Distance);
+      carDtos.Add(new CarDto(
+        dbCar.Model,
+        dbCar.Mark,
+        dbCar.Color,
+        dbCar.Year,
+        dbCar.Price,
+        totalMileage,
+        DateTime.UtcNow
+      ));
+    }
+
+    return carDtos;
   }
 }
