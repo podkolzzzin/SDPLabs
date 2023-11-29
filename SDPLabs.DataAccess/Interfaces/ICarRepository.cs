@@ -6,4 +6,5 @@ public interface ICarRepository
   Task<Car> AddAsync(Car car);
   Task UpdateAsync(Car existing);
   Task<Car?> FindByVinCodeAsync(string createCarVinCode);
+  
 }

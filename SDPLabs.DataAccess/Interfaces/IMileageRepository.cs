@@ -12,5 +12,5 @@ public interface IMileageRepository
 
 	Task DeleteAsync(Mileage mileage);
 
-	Task<List<Mileage>> GetAllAsync();
+	Task<List<Mileage>> GetAllMileagesAsync();
 }

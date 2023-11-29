@@ -76,8 +76,15 @@ public class CarService
 
     foreach (var dbCar in dbCars)
     {
-      var mileages = await _mileageRepository.FindByCarIdAsync(dbCar.Id);
-      var totalMileage = mileages.Sum(m => m.Distance);
+      var totalMileage = 0;
+      var mileages = await _mileageRepository.GetAllMileagesAsync();
+      foreach (var tt in mileages)
+      {
+        if (tt.Car == dbCar)
+        {
+          totalMileage += tt.Distance;
+        }
+      }
       carDtos.Add(new CarDto(
         dbCar.Model,
         dbCar.Mark,

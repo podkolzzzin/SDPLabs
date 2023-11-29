@@ -35,4 +35,11 @@ public class CarRepository : ICarRepository
     // SELECT * FROM Cars WHERE VinCode = ?
     return await _context.Cars.FirstOrDefaultAsync(x => x.VinCode == createCarVinCode);
   }
+  
+  public async Task<List<Mileage>> GetAllMileagesAsync()
+  {
+    return await _context.Mileages
+      .ToListAsync();
+  }
+
 }
