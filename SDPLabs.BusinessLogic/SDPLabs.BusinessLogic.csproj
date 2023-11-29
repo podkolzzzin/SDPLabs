@@ -10,4 +10,8 @@
       <ProjectReference Include="..\SDPLabs.DataAccess\SDPLabs.DataAccess.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="RabbitMQ.Client" Version="6.6.0" />
+    </ItemGroup>
+
 </Project>

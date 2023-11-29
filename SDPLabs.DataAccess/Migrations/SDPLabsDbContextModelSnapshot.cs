@@ -56,7 +56,43 @@ namespace SDPLabs.DataAccess.Migrations
                     b.HasIndex("VinCode")
                         .IsUnique();
 
-                    b.ToTable("Cars", (string)null);
+                    b.ToTable("Cars");
+                });
+
+            modelBuilder.Entity("SDPLabs.DataAccess.Mileage", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("CarId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Date")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("Distance")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CarId");
+
+                    b.ToTable("Mileages");
+                });
+
+            modelBuilder.Entity("SDPLabs.DataAccess.Mileage", b =>
+                {
+                    b.HasOne("SDPLabs.DataAccess.Car", "Car")
+                        .WithMany()
+                        .HasForeignKey("CarId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Car");
                 });
 #pragma warning restore 612, 618
         }

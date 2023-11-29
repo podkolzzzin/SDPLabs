@@ -9,5 +9,13 @@
       <jdbc-url>jdbc:postgresql://localhost:5441/SDPLabs</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="SDPLabs" uuid="4f771326-0960-4578-a038-cef45c9a275f">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <remarks>Database=SDPLabs;User Id=sdplabsuser;Password=sdplabsuser;Port=5441</remarks>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://localhost:5441/postgres</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

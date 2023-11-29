@@ -2,6 +2,12 @@ using SDPLabs.BusinessLogic;
 using SDPLabs.DataAccess;
 using SDPLabs.DataAccess.Interfaces;
 using SDPLabs.DataAccess.Repositories;
+using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
+using System.Threading;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,17 +33,41 @@ app.Run();
 
 public record CarRequestDto(string Model, string Mark, string Color, int YearOfProduction, int Price, string VinCode);
 
+
 public class RabbitMqListenerService : IHostedService
 {
+  private IConnection _connection;
+  private IModel _channel;
   public Task StartAsync(CancellationToken cancellationToken)
   {
-    // Open Connection and Channel here
-    // Start listening to events
-    throw new NotImplementedException();
+    var factory = new ConnectionFactory()
+    {
+      HostName = "localhost",
+      UserName = "user",
+      Password = "password"
+    };// Configure as needed
+    _connection = factory.CreateConnection();
+    _channel = _connection.CreateModel();
+
+    _channel.QueueDeclare(queue: "yourQueueName", durable: false, exclusive: false, autoDelete: false, arguments: null);
+
+    var consumer = new EventingBasicConsumer(_channel);
+    consumer.Received += (model, ea) =>
+    {
+      var body = ea.Body.ToArray();
+      var message = Encoding.UTF8.GetString(body);
+      // Process the message here
+      Console.WriteLine("Received message: " + message);
+    };
+
+    _channel.BasicConsume(queue: "yourQueueName", autoAck: true, consumer: consumer);
+
+    return Task.CompletedTask;
   }
   public Task StopAsync(CancellationToken cancellationToken)
   {
-    // Close Connection and Channel here
-    throw new NotImplementedException();
+    _channel?.Close();
+    _connection?.Close();
+    return Task.CompletedTask;
   }
 }
