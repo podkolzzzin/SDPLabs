@@ -1,6 +1,11 @@
-﻿using SDPLabs.DataAccess;
+﻿using System.Text;
+using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using RabbitMQ.Client;
+using SDPLabs.DataAccess;
 using SDPLabs.DataAccess.Interfaces;
-
+using SDPLabs.Common.Events;
 namespace SDPLabs.BusinessLogic;
 
 public record AccidentDto(string Description, int Damage);
@@ -12,10 +17,16 @@ public class CarService
 {
   private readonly ICarRepository _carRepository;
   private readonly SDPLabsDbContext _context; // Add DbContext to interact with Mileage
-  public CarService(ICarRepository carRepository, SDPLabsDbContext context)
+  private readonly RabbitMQConnectionManager _rabbitMQManager;
+
+
+  // private readonly IModel _channel;
+
+  public CarService(ICarRepository carRepository, SDPLabsDbContext context, RabbitMQConnectionManager rabbitMQManager)
   {
     _carRepository = carRepository;
     _context = context;
+    _rabbitMQManager = rabbitMQManager;
   }
   
   public async Task AddCarAsync(CreateCarDto createCar)
@@ -76,5 +87,49 @@ public class CarService
 
     await _context.Mileages.AddAsync(mileage);
     await _context.SaveChangesAsync();
+    
+    var totalMileage = await CalculateTotalMileageAsync(carId);
+    await CheckAndPublishMileageEvents(carId, totalMileage);
   }
+  
+  private async Task<double> CalculateTotalMileageAsync(long carId)
+  {
+    return await _context.Mileages
+      .Where(m => m.CarId == carId)
+      .SumAsync(m => m.Distance);
+  }
+
+  private async Task CheckAndPublishMileageEvents(long carId, double totalMileage)
+  {
+    if (totalMileage > 200000)
+    {
+      // Publish CarReceivedCriticalMileage event
+      PublishMileageEvent(new CarReceivedCriticalMileage(carId, totalMileage));
+    }
+    else if (totalMileage > 100000)
+    {
+      // Publish CarReceivedDangerousMileage event
+      PublishMileageEvent(new CarReceivedDangerousMileage(carId, totalMileage));
+    }
+  }
+  
+  
+  private void PublishMileageEvent(object mileageEvent)
+  {
+    var eventName = mileageEvent.GetType().Name;
+    var message = JsonSerializer.Serialize(mileageEvent);
+    var body = Encoding.UTF8.GetBytes(message);
+    
+    var channel = _rabbitMQManager.GetChannel();
+
+    channel.BasicPublish(
+      exchange: nameof(CarMovedEvent), // Ensure this exchange is declared in your RabbitMQ setup
+      routingKey: eventName,
+      basicProperties: null,
+      body: body
+    );
+
+    Console.WriteLine($"Published {eventName}: {message}");
+  }
+
 }

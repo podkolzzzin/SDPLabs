@@ -10,12 +10,17 @@ using SDPLabs.Common.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddControllers();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<SDPLabsDbContext>();
 builder.Services.AddScoped<CarService>();
 builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddHostedService<RabbitMqListenerService>();
+// Register RabbitMQConnectionManager as a singleton
+builder.Services.AddSingleton<RabbitMQConnectionManager>(sp => 
+  new RabbitMQConnectionManager("localhost", "user", "password"));
 
 var app = builder.Build();
 

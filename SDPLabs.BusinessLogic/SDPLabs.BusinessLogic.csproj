@@ -7,7 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\SDPLabs.Common.Events\SDPLabs.Common.Events.csproj" />
       <ProjectReference Include="..\SDPLabs.DataAccess\SDPLabs.DataAccess.csproj" />
+      <ProjectReference Include="..\SDPLabs.RandomPublisher\SDPLabs.RandomPublisher.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="RabbitMQ.Client" Version="6.6.0" />
     </ItemGroup>
 
 </Project>
