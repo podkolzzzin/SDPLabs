@@ -43,3 +43,45 @@ public class CarRepository : ICarRepository
   }
 
 }
+
+public class MileageRepository : IMileageRepository
+{
+  private readonly SDPLabsDbContext _context;
+
+  public MileageRepository(SDPLabsDbContext context)
+  {
+    _context = context;
+  }
+
+  public async Task<Mileage> AddAsync(Mileage mileage)
+  {
+    _context.Add(mileage);
+    await _context.SaveChangesAsync();
+    return mileage;
+  }
+
+  public async Task<List<Mileage>> FindByCarIdAsync(long carId)
+  {
+    return await _context.Mileages
+      .Where(m => m.CarId == carId)
+      .ToListAsync();
+  }
+
+  public async Task UpdateAsync(Mileage mileage)
+  {
+    _context.Update(mileage);
+    await _context.SaveChangesAsync();
+  }
+
+  public async Task DeleteAsync(Mileage mileage)
+  {
+    _context.Remove(mileage);
+    await _context.SaveChangesAsync();
+  }
+
+  public async Task<List<Mileage>> GetAllMileagesAsync()
+  {
+    return await _context.Mileages
+      .ToListAsync();
+  }
+}

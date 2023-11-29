@@ -22,7 +22,13 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<SDPLabsDbContext>();
 builder.Services.AddScoped<CarService>();
 builder.Services.AddScoped<ICarRepository, CarRepository>();
-// Change the lifetime to Scoped for RabbitMqListenerService
+builder.Services.AddScoped<IMileageRepository, MileageRepository>(); // Change this to Scoped
+
+// Register RabbitMqListenerService as Scoped
+builder.Services.AddScoped<RabbitMqListenerService>();
+
+
+// Register RabbitMqListenerService as Scoped
 builder.Services.AddScoped<RabbitMqListenerService>();
 
 var app = builder.Build();
