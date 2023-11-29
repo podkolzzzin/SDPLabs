@@ -7,12 +7,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.*-*"/>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.*-*" />
+        <PackageReference Include="RabbitMQ.Client" Version="6.6.0" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\SDPLabs.BusinessLogic\SDPLabs.BusinessLogic.csproj" />
+      <ProjectReference Include="..\SDPLabs.Common.Events\SDPLabs.Common.Events.csproj" />
     </ItemGroup>
     
 </Project>

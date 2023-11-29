@@ -5,6 +5,7 @@ namespace SDPLabs.DataAccess;
 public class SDPLabsDbContext : DbContext
 {
     public DbSet<Car> Cars { get; set; } = null!;
+    public DbSet<Mileage> Mileages { get; set; }
 
     public SDPLabsDbContext()
     {
@@ -30,4 +31,13 @@ public class Car
     
     public int Price { get; set; }
     public string Color { get; set; } = null!;
+}
+
+public class Mileage
+{
+    public long Id { get; set; }
+    public double Distance { get; set; }
+    public DateTime Date { get; set; }
+    public long CarId { get; set; }
+    public Car Car { get; set; }
 }
