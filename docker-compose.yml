@@ -8,9 +8,12 @@ services:
       - POSTGRESQL_PASSWORD=sdplabsuser
     ports:
       - "5441:5432"
-    networks:
-      - my-network
-
-networks:
-  my-network:
-    driver: bridge
+  rabbitmq:
+    image: 'bitnami/rabbitmq:latest'
+    environment:
+      - RABBITMQ_USERNAME=user
+      - RABBITMQ_PASSWORD=password
+      - RABBITMQ_VHOST=/
+    ports:
+      - '5672:5672'
+      - '15672:15672'
