@@ -1,96 +1,89 @@
-﻿using SDPLabs.DataAccess.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using SDPLabs.DataAccess;
+﻿using SDPLabs.DataAccess;
+using SDPLabs.DataAccess.Interfaces;
 
-namespace SDPLabs.BusinessLogic
+namespace SDPLabs.BusinessLogic;
+
+public record AccidentDto(string Description, int Damage);
+public record CarDto(string Model, string Mark, string Color, int YearOfProduction, int Price, int Mileage, DateTime recordTime);
+public record CreateCarDto(string Model, string Mark, string Color, int YearOfProduction, int Price, string VinCode);
+
+public record MileageDto(long CarId, int Distance, DateTime DateRecorded);
+public record CreateMileageDto(long CarId, int Distance, DateTime DateRecorded);
+
+
+public class CarService
 {
-    public record AccidentDto(string Description, int Damage);
-    public record CarDto(string Model, string Mark, string Color, int YearOfProduction, int Price, int Mileage, DateTime recordTime);
-    public record CreateCarDto(string Model, string Mark, string Color, int YearOfProduction, int Price, string VinCode);
+  private readonly ICarRepository _carRepository;
 
-    public record MileageDto(long CarId, int Distance, DateTime DateRecorded);
-    public record CreateMileageDto(long CarId, int Distance, DateTime DateRecorded);
+  public CarService(ICarRepository carRepository)
+  {
+    _carRepository = carRepository;
+  }
 
-    public class CarService
+  public async Task AddMileageAsync(CreateMileageDto createMileageDto)
+  {
+    var mileage = new Mileage
     {
-        private readonly ICarRepository _carRepository;
-        private readonly IMileageRepository _mileageRepository;
-
-        public CarService(ICarRepository carRepository, IMileageRepository mileageRepository)
-        {
-            _carRepository = carRepository;
-            _mileageRepository = mileageRepository;
-        }
-
-        public async Task AddMileageAsync(CreateMileageDto createMileageDto)
-        {
-            var mileage = new Mileage
-            {
-                CarId = createMileageDto.CarId,
-                Distance = createMileageDto.Distance,
-                DateRecorded = createMileageDto.DateRecorded
-            };
-            await _mileageRepository.AddAsync(mileage);
-        }
-
-        public async Task<List<MileageDto>> GetMileageByCarIdAsync(long carId)
-        {
-            var mileages = await _mileageRepository.FindByCarIdAsync(carId);
-            return mileages.Select(m => new MileageDto(m.CarId, m.Distance, m.DateRecorded)).ToList();
-        }
-
-        public async Task AddCarAsync(CreateCarDto createCar)
-        {
-            var existing = await _carRepository.FindByVinCodeAsync(createCar.VinCode);
-            if (existing != null)
-            {
-                existing.Color = createCar.Color;
-                existing.Mark = createCar.Mark;
-                existing.Year = createCar.YearOfProduction;
-                existing.Price = createCar.Price;
-                existing.Model = createCar.Model;
-                await _carRepository.UpdateAsync(existing);
-            }
-            else
-            {
-                await _carRepository.AddAsync(new Car
-                {
-                    Model = createCar.Model,
-                    Mark = createCar.Mark,
-                    Year = createCar.YearOfProduction,
-                    Color = createCar.Color,
-                    Price = createCar.Price,
-                    VinCode = createCar.VinCode,
-                });
-            }
-        }
-
-        public async Task<List<CarDto>> GetAll()
-        {
-            var dbCars = await _carRepository.GetAllAsync();
-            var carDtos = new List<CarDto>();
-
-            foreach (var dbCar in dbCars)
-            {
-                var totalMileage = 0;
-                var mileages = await _mileageRepository.FindByCarIdAsync(dbCar.Id);
-                totalMileage = mileages.Sum(m => m.Distance);
-
-                carDtos.Add(new CarDto(
-                    dbCar.Model,
-                    dbCar.Mark,
-                    dbCar.Color,
-                    dbCar.Year,
-                    dbCar.Price,
-                    totalMileage,
-                    DateTime.UtcNow
-                ));
-            }
-
-            return carDtos;
-        }
+      CarId = createMileageDto.CarId,
+      Distance = createMileageDto.Distance,
+      DateRecorded = createMileageDto.DateRecorded
+    };
+    await _carRepository.AddMileageAsync(mileage);
+  }
+  
+  public async Task AddCarAsync(CreateCarDto createCar)
+  {
+    var existing = await _carRepository.FindByVinCodeAsync(createCar.VinCode);
+    if (existing != null)
+    {
+      existing.Color = createCar.Color;
+      existing.Mark = createCar.Mark;
+      existing.Year = createCar.YearOfProduction;
+      existing.Price = createCar.Price;
+      existing.Model = createCar.Model;
+      await _carRepository.UpdateAsync(existing);
     }
+    else
+    {
+      await _carRepository.AddAsync(new()
+      {
+        Model = createCar.Model,
+        Mark = createCar.Mark,
+        Year = createCar.YearOfProduction,
+        Color = createCar.Color,
+        Price = createCar.Price,
+        VinCode = createCar.VinCode,
+      });
+    }
+  }
+
+  public async Task<List<CarDto>> GetAll()
+  {
+    var dbCars = await _carRepository.GetAllAsync();
+    var carDtos = new List<CarDto>();
+
+    foreach (var dbCar in dbCars)
+    {
+      var totalMileage = 0;
+      var mileages = await _carRepository.GetAllMileagesAsync();
+      foreach (var tt in mileages)
+      {
+        if (tt.Car == dbCar)
+        {
+          totalMileage += tt.Distance;
+        }
+      }
+      carDtos.Add(new CarDto(
+        dbCar.Model,
+        dbCar.Mark,
+        dbCar.Color,
+        dbCar.Year,
+        dbCar.Price,
+        totalMileage,
+        DateTime.UtcNow
+      ));
+    }
+
+    return carDtos;
+  }
 }

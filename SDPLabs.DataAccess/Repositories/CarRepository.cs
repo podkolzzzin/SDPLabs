@@ -35,25 +35,7 @@ public class CarRepository : ICarRepository
     // SELECT * FROM Cars WHERE VinCode = ?
     return await _context.Cars.FirstOrDefaultAsync(x => x.VinCode == createCarVinCode);
   }
-  
-  public async Task<List<Mileage>> GetAllMileagesAsync()
-  {
-    return await _context.Mileages
-      .ToListAsync();
-  }
-
-}
-
-public class MileageRepository : IMileageRepository
-{
-  private readonly SDPLabsDbContext _context;
-
-  public MileageRepository(SDPLabsDbContext context)
-  {
-    _context = context;
-  }
-
-  public async Task<Mileage> AddAsync(Mileage mileage)
+  public async Task<Mileage> AddMileageAsync(Mileage mileage)
   {
     _context.Add(mileage);
     await _context.SaveChangesAsync();
