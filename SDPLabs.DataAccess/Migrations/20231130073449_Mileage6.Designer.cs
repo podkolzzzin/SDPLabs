@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SDPLabs.DataAccess;
@@ -11,9 +12,11 @@ using SDPLabs.DataAccess;
 namespace SDPLabs.DataAccess.Migrations
 {
     [DbContext(typeof(SDPLabsDbContext))]
-    partial class SDPLabsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231130073449_Mileage6")]
+    partial class Mileage6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

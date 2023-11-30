@@ -1,31 +1,89 @@
-﻿using SDPLabs.DataAccess.Interfaces;
+﻿using SDPLabs.DataAccess;
+using SDPLabs.DataAccess.Interfaces;
 
 namespace SDPLabs.BusinessLogic;
 
-public record CarDto(string Model, string Mark, string Color, int YearOfProduction, int Price);
+public record AccidentDto(string Description, int Damage);
+public record CarDto(string Model, string Mark, string Color, int YearOfProduction, int Price, int Mileage, DateTime recordTime);
+public record CreateCarDto(string Model, string Mark, string Color, int YearOfProduction, int Price, string VinCode);
+
+public record MileageDto(long CarId, int Distance, DateTime DateRecorded);
+public record CreateMileageDto(long CarId, int Distance, DateTime DateRecorded);
+
 
 public class CarService
 {
   private readonly ICarRepository _carRepository;
+
   public CarService(ICarRepository carRepository)
   {
     _carRepository = carRepository;
   }
-  
-  public async Task AddCarAsync(CarDto car)
+
+  public async Task AddMileageAsync(CreateMileageDto createMileageDto)
   {
-    await _carRepository.AddAsync(new ()
+    var mileage = new Mileage
     {
-      Model = car.Model,
-      Mark = car.Mark,
-      Year = car.YearOfProduction,
-    });
+      CarId = createMileageDto.CarId,
+      Distance = createMileageDto.Distance,
+      DateRecorded = createMileageDto.DateRecorded
+    };
+    await _carRepository.AddMileageAsync(mileage);
+  }
+  
+  public async Task AddCarAsync(CreateCarDto createCar)
+  {
+    var existing = await _carRepository.FindByVinCodeAsync(createCar.VinCode);
+    if (existing != null)
+    {
+      existing.Color = createCar.Color;
+      existing.Mark = createCar.Mark;
+      existing.Year = createCar.YearOfProduction;
+      existing.Price = createCar.Price;
+      existing.Model = createCar.Model;
+      await _carRepository.UpdateAsync(existing);
+    }
+    else
+    {
+      await _carRepository.AddAsync(new()
+      {
+        Model = createCar.Model,
+        Mark = createCar.Mark,
+        Year = createCar.YearOfProduction,
+        Color = createCar.Color,
+        Price = createCar.Price,
+        VinCode = createCar.VinCode,
+      });
+    }
   }
 
   public async Task<List<CarDto>> GetAll()
   {
     var dbCars = await _carRepository.GetAllAsync();
-    return dbCars.Select(x => new CarDto(x.Model, x.Mark, null!, x.Year, 0))
-      .ToList();
+    var carDtos = new List<CarDto>();
+
+    foreach (var dbCar in dbCars)
+    {
+      var totalMileage = 0;
+      var mileages = await _carRepository.GetAllMileagesAsync();
+      foreach (var tt in mileages)
+      {
+        if (tt.Car == dbCar)
+        {
+          totalMileage += tt.Distance;
+        }
+      }
+      carDtos.Add(new CarDto(
+        dbCar.Model,
+        dbCar.Mark,
+        dbCar.Color,
+        dbCar.Year,
+        dbCar.Price,
+        totalMileage,
+        DateTime.UtcNow
+      ));
+    }
+
+    return carDtos;
   }
 }
